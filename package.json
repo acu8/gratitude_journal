@@ -11,12 +11,21 @@
     "test": "jest"
   },
   "dependencies": {
+    "@headlessui/react": "^2.1.2",
+    "@heroicons/react": "^2.1.5",
+    "@material-tailwind/react": "^2.1.9",
+    "@radix-ui/react-slot": "^1.1.0",
     "@supabase/supabase-js": "^2.45.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
     "dotenv": "^16.4.5",
     "firebase": "^10.12.5",
+    "lucide-react": "^0.424.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.0",
+    "tailwind-merge": "^2.4.0",
+    "tailwindcss-animate": "^1.0.7",
     "vite-plugin-env-compatible": "^2.0.1"
   },
   "devDependencies": {
@@ -29,10 +38,13 @@
     "@typescript-eslint/eslint-plugin": "^7.15.0",
     "@typescript-eslint/parser": "^7.15.0",
     "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.20",
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
     "jest-environment-jsdom": "^29.7.0",
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.8",
     "ts-jest": "^29.2.4",
     "typescript": "^5.2.2",
     "vite": "^5.3.4"

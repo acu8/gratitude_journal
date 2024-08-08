@@ -3,6 +3,7 @@ import Login from "./components/Login";
 import JournalPage from "./components/JournalPage";
 import ResponsePage from "./components/ResponsePage";
 import CalendarPage from "./components/CalendarPage";
+import "./App.css";
 
 function App() {
   return (
