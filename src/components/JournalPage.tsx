@@ -10,12 +10,7 @@ interface IFormInput {
 }
 
 function JournalPage() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<IFormInput>();
+  const { handleSubmit, reset } = useForm<IFormInput>();
   const [journal, setJournal] = useState<string>("");
   const [entries, setEntries] = useState<string[]>([]);
   const navigate = useNavigate();
