@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { getJournal } from "../utils/supabaseFunction";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 type JournalEntry = {
@@ -138,6 +139,17 @@ function ResponsePage() {
           <p>{response}</p>
         </div>
       )}
+      <div className="flex justify-end mt-4">
+        <Link
+          to="/calendar"
+          className="mt-4"
+          style={{ textDecoration: "none" }}
+        >
+          <button className="btn btn-outline btn-success mt-4 cursor: cursor-pointer">
+            Journal Calendar
+          </button>
+        </Link>
+      </div>
     </div>
   );
 }
