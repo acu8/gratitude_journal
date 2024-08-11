@@ -42,7 +42,6 @@ function ResponsePage() {
         console.log("API Key:", process.env.VITE_GEMINI_API_KEY);
         console.log("Request Content:", content);
 
-        // システムインストラクションとユーザーの入力を組み合わせる
         const combinedPrompt = `
                 システムインストラクション: あなたはユーザーの日記を読み、共感的で洞察力のあるフィードバックを提供する心理カウンセラーです。
                 ユーザーの感情を理解し、前向きなコメントを提供してください。明日1日を前向きで始められるように文章を終わらしてください。
