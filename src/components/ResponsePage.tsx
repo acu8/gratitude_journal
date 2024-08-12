@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { getJournal } from "../utils/supabaseFunction";
+import { getJournal, addAiResponse } from "../utils/supabaseFunction";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
 type JournalEntry = {
+  id?: number;
   content: string[];
 };
 
@@ -19,8 +20,7 @@ function ResponsePage() {
     const fetchData = async () => {
       try {
         const data = await getJournal("bc45252b-6f56-497d-9b5c-e13db27db01b");
-        console.log(data);
-        setJournalData(data);
+        setJournalData(data as JournalData);
       } catch (error) {
         console.error("エラーが発生しました:", error);
         setError(
@@ -39,7 +39,6 @@ function ResponsePage() {
       if (!journalData) return;
       try {
         const content = journalData[0].content.join(" ");
-        console.log("API Key:", process.env.VITE_GEMINI_API_KEY);
         console.log("Request Content:", content);
 
         const combinedPrompt = `
@@ -81,23 +80,49 @@ function ResponsePage() {
             candidateContent.parts &&
             candidateContent.parts.length > 0
           ) {
-            setResponse(candidateContent.parts[0].text);
-            console.log("Extracted Response:", candidateContent.parts[0].text);
+            const aiResponseText = candidateContent.parts[0].text;
+            try {
+              const journalId = journalData[0].id;
+              if (journalId === undefined) {
+                throw new Error("Journal IDが見つかりません");
+              }
+              const responseResult = await addAiResponse(
+                "bc45252b-6f56-497d-9b5c-e13db27db01b",
+                journalId,
+                aiResponseText
+              );
+              console.log(
+                "AIレスポンスがデータベースに保存されました:",
+                responseResult
+              );
+            } catch (error) {
+              console.error(
+                "AIレスポンスの保存中にエラーが発生しました:",
+                error
+              );
+              if (error instanceof Error) {
+                setError(error.message);
+              } else {
+                setError("AIレスポンスの保存中に不明なエラーが発生しました");
+              }
+            }
+            setResponse(aiResponseText);
+            console.log("抽出されたレスポンス:", aiResponseText);
           } else {
-            console.error("Unexpected response structure:", candidateContent);
+            console.error("予期せぬレスポンス構造:", candidateContent);
             setError("AIレスポンスの構造が予期せぬものでした。");
           }
         } else {
-          console.error("No candidates in response");
+          console.error("レスポンスに候補がありません");
           setError("AIレスポンスに候補が含まれていませんでした。");
         }
       } catch (error) {
-        console.error("Error:", error);
+        console.error("エラー:", error);
         if (axios.isAxiosError(error)) {
-          console.error("Response data:", error.response?.data);
-          console.error("Status code:", error.response?.status);
+          console.error("レスポンスデータ:", error.response?.data);
+          console.error("ステータスコード:", error.response?.status);
           console.error(
-            "Error details:",
+            "エラー詳細:",
             JSON.stringify(error.response?.data, null, 2)
           );
         }

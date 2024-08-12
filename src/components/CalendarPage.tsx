@@ -4,6 +4,9 @@ import { Calendar } from "../@/components/ui/calendar";
 import {
   fetchHighlightedDates,
   handleDateSelect,
+  getAiResponse,
+  deleteContent,
+  deleteAiResponse,
 } from "../utils/supabaseFunction";
 
 interface DateItem {
@@ -11,13 +14,24 @@ interface DateItem {
 }
 
 interface ContentItem {
+  id: number | null;
   content: string[];
 }
+
+interface AiResponseItem {
+  response: string;
+}
+
+type AiResponse = AiResponseItem[] | null;
 
 function CalendarPage() {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [highlightedDates, setHighlightedDates] = useState<Date[]>([]);
   const [selectedContent, setSelectedContent] = useState<string[] | null>(null);
+  const [selectedResponse, setSelectedResponse] = useState<string | null>(null);
+  const [selectedJournalId, setSelectedJournalId] = useState<number | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchDates = async () => {
@@ -37,15 +51,55 @@ function CalendarPage() {
     fetchDates();
   }, []);
 
+  const handleDelete = async (id: number | null) => {
+    if (id === null) {
+      console.error("Journal ID is null, cannot delete");
+      return;
+    }
+    try {
+      await deleteContent(id);
+      await deleteAiResponse(id);
+      setSelectedContent(null);
+      setSelectedResponse(null);
+      setSelectedJournalId(null);
+      const updatedDates = await fetchHighlightedDates();
+      if (updatedDates && Array.isArray(updatedDates)) {
+        setHighlightedDates(
+          updatedDates.map((item: DateItem) => new Date(item.created_at))
+        );
+      } else {
+        console.error(
+          "Updated dates are not in expected format:",
+          updatedDates
+        );
+        setHighlightedDates([]);
+      }
+    } catch (error) {
+      console.error("Error deleting content:", error);
+    }
+  };
+
   const onDateSelect = async (selectedDate: Date | undefined) => {
     setDate(selectedDate);
     if (selectedDate) {
       try {
         const content = await handleDateSelect(selectedDate);
         setSelectedContent((content as ContentItem)?.content || null);
+        setSelectedJournalId((content as ContentItem)?.id || null);
+        const aiResponseResult: AiResponse = await getAiResponse(selectedDate);
+        if (aiResponseResult && aiResponseResult.length > 0) {
+          setSelectedResponse(aiResponseResult[0].response);
+        } else {
+          console.log("No valid AI response available for the selected date");
+          setSelectedResponse(null);
+        }
       } catch (error) {
-        console.error("Error fetching content for selected date:", error);
+        console.error(
+          "選択された日付のコンテンツ取得中にエラーが発生しました:",
+          error
+        );
         setSelectedContent(null);
+        setSelectedResponse(null);
       }
     }
   };
@@ -74,6 +128,23 @@ function CalendarPage() {
           </ul>
         </div>
       )}
+      <div>
+        {selectedResponse ? (
+          <div>
+            <p>{selectedResponse}</p>
+            <button
+              onClick={() => handleDelete(selectedJournalId)}
+              className="btn btn-outline btn-success mt-4 cursor: cursor-pointer"
+            >
+              投稿を削除する
+            </button>
+          </div>
+        ) : (
+          <button className="btn btn-outline btn-success mt-4 cursor: cursor-pointer hidden">
+            投稿を削除する
+          </button>
+        )}
+      </div>
     </div>
   );
 }
