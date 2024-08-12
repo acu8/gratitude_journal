@@ -223,3 +223,26 @@ if (error) {
 
 return data && data.length > 0 ? data[0] : null;
 };
+
+
+export const loginUser = async (email: string, password: string): Promise<User[]> => {
+  const { data, error } = await supabase
+    .from('registered-users')
+    .select()
+    .eq('email', email)
+    .single();
+
+  if (error) {
+    throw new Error('ログインに失敗しました');
+  }
+
+  if (!data) {
+    throw new Error('ユーザーが見つかりません');
+  }
+
+  if (data.password !== password) {
+    throw new Error('パスワードが正しくありません');
+  }
+
+  return data;
+};

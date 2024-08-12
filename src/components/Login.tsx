@@ -9,8 +9,38 @@ import {
 import { Input } from "../@/components/ui/input";
 import { Label } from "../@/components/ui/label";
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { loginUser } from "../utils/supabaseFunction";
+import { useUser } from "../Context/UserContext";
+import { useNavigate } from "react-router-dom";
+
+type FormData = {
+  email: string;
+  password: string;
+};
 
 function LoginPage() {
+  const navigate = useNavigate();
+  const { setUser } = useUser();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<FormData>();
+
+  const onLogin = async (data: FormData) => {
+    try {
+      const user = await loginUser(data.email, data.password);
+      setUser(user);
+      console.log("ログインが成功しました:");
+      reset();
+      navigate("/journal");
+    } catch (error) {
+      console.error("ログインエラー:", error);
+    }
+  };
+
   return (
     <Card className="w-[350px]">
       <CardHeader>
@@ -18,26 +48,51 @@ function LoginPage() {
         <CardDescription></CardDescription>
       </CardHeader>
       <CardContent>
-        <form>
+        <form onSubmit={handleSubmit(onLogin)}>
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="name">Email</Label>
-              <Input id="name" placeholder="Emailアドレスを入力" />
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                placeholder="Emailアドレスを入力"
+                {...register("email", {
+                  required: "メールアドレスは必須です",
+                  pattern: {
+                    value: /^\S+@\S+$/i,
+                    message: "有効なメールアドレスを入力してください",
+                  },
+                })}
+              />
+              {errors.email && (
+                <span className="text-red-500">{errors.email.message}</span>
+              )}
             </div>
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="framework">Password</Label>
-              <Input id="name" placeholder="Passwordを入力" />
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                placeholder="Passwordを入力"
+                type="password"
+                {...register("password", {
+                  required: "パスワードの入力は必須です",
+                  minLength: {
+                    value: 8,
+                    message: "パスワードは8文字以上である必要があります",
+                  },
+                })}
+              />
+              {errors.password && (
+                <span className="text-red-500">{errors.password.message}</span>
+              )}
             </div>
+          </div>
+          <div className="flex justify-end">
+            <button className="btn btn-outline btn-success cursor: cursor-pointer">
+              Login
+            </button>
           </div>
         </form>
       </CardContent>
-      <div className="flex justify-end">
-        <Link to="/journal" className="" style={{ textDecoration: "none" }}>
-          <button className="btn btn-outline btn-success cursor: cursor-pointer">
-            Login
-          </button>
-        </Link>
-      </div>
       <CardFooter className="flex justify-between mt-4">
         <Link to="/newuser" className="" style={{ textDecoration: "none" }}>
           <button className="btn btn-warning">新規ユーザー登録はこちら</button>
