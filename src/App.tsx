@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import ProtectedRoute from "./Route/ProtectedRoute";
 import Login from "./components/Login";
 import JournalPage from "./components/JournalPage";
 import ResponsePage from "./components/ResponsePage";
@@ -15,10 +16,12 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/journal" element={<JournalPage />} />
-          <Route path="/response" element={<ResponsePage />} />
-          <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/newuser" element={<NewUserPage />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/journal" element={<JournalPage />} />
+            <Route path="/response" element={<ResponsePage />} />
+            <Route path="/calendar" element={<CalendarPage />} />
+          </Route>
         </Routes>
       </UserProvider>
     </>

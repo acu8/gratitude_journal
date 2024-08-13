@@ -87,10 +87,12 @@ return data && data.length > 0 ? data[0] : null;
 
 
 
-export const fetchHighlightedDates = async () => {
+export const fetchHighlightedDates = async (user_id: string) => {
   const { data, error } = await supabase
-    .from('journal')
-    .select();
+  .from("journal")
+  .select()
+  .eq("user_id", user_id)
+ 
 
   if (error) {
     console.error('Error fetching dates:', error);
@@ -225,7 +227,7 @@ return data && data.length > 0 ? data[0] : null;
 };
 
 
-export const loginUser = async (email: string, password: string): Promise<User[]> => {
+export const loginUser = async (email: string, password: string): Promise<User> => {
   const { data, error } = await supabase
     .from('registered-users')
     .select()

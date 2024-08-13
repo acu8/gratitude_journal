@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { getJournal, addAiResponse } from "../utils/supabaseFunction";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useUser } from "../Context/UserContext";
 
 type JournalEntry = {
   id?: number;
@@ -15,12 +16,17 @@ function ResponsePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [response, setResponse] = useState<string | null>(null);
+  const { user } = useUser();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getJournal("bc45252b-6f56-497d-9b5c-e13db27db01b");
-        setJournalData(data as JournalData);
+        if (user && user.id) {
+          const data = await getJournal(user.id);
+          setJournalData(data as JournalData);
+        } else {
+          console.log("有効なユーザーIDが見つかりません", user);
+        }
       } catch (error) {
         console.error("エラーが発生しました:", error);
         setError(
@@ -86,15 +92,19 @@ function ResponsePage() {
               if (journalId === undefined) {
                 throw new Error("Journal IDが見つかりません");
               }
-              const responseResult = await addAiResponse(
-                "bc45252b-6f56-497d-9b5c-e13db27db01b",
-                journalId,
-                aiResponseText
-              );
-              console.log(
-                "AIレスポンスがデータベースに保存されました:",
-                responseResult
-              );
+              if (user && user.id) {
+                const responseResult = await addAiResponse(
+                  user.id,
+                  journalId,
+                  aiResponseText
+                );
+                console.log(
+                  "AIレスポンスがデータベースに保存されました:",
+                  responseResult
+                );
+              } else {
+                console.log("有効なユーザーIDが見つかりません", user);
+              }
             } catch (error) {
               console.error(
                 "AIレスポンスの保存中にエラーが発生しました:",

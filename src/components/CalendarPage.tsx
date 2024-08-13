@@ -8,6 +8,7 @@ import {
   deleteContent,
   deleteAiResponse,
 } from "../utils/supabaseFunction";
+import { useUser } from "../Context/UserContext";
 
 interface DateItem {
   created_at: string;
@@ -32,24 +33,29 @@ function CalendarPage() {
   const [selectedJournalId, setSelectedJournalId] = useState<number | null>(
     null
   );
+  const { user } = useUser();
 
   useEffect(() => {
     const fetchDates = async () => {
       try {
-        const dates = await fetchHighlightedDates();
-        if (Array.isArray(dates)) {
-          setHighlightedDates(
-            dates.map((item: DateItem) => new Date(item.created_at))
-          );
+        if (user && user.id) {
+          const dates = await fetchHighlightedDates(user.id);
+          if (Array.isArray(dates)) {
+            setHighlightedDates(
+              dates.map((item: DateItem) => new Date(item.created_at))
+            );
+          } else {
+            console.error("Fetched dates are not in expected format:", dates);
+          }
         } else {
-          console.error("Fetched dates are not in expected format:", dates);
+          console.log("有効なユーザーIDが見つかりません", user);
         }
       } catch (error) {
         console.log("コンテンツの取得中にエラーが発生しました", error);
       }
     };
     fetchDates();
-  }, []);
+  }, [user]);
 
   const handleDelete = async (id: number | null) => {
     if (id === null) {
@@ -62,17 +68,20 @@ function CalendarPage() {
       setSelectedContent(null);
       setSelectedResponse(null);
       setSelectedJournalId(null);
-      const updatedDates = await fetchHighlightedDates();
-      if (updatedDates && Array.isArray(updatedDates)) {
-        setHighlightedDates(
-          updatedDates.map((item: DateItem) => new Date(item.created_at))
-        );
-      } else {
-        console.error(
-          "Updated dates are not in expected format:",
-          updatedDates
-        );
-        setHighlightedDates([]);
+
+      if (user && user.id) {
+        const updatedDates = await fetchHighlightedDates(user.id);
+        if (updatedDates && Array.isArray(updatedDates)) {
+          setHighlightedDates(
+            updatedDates.map((item: DateItem) => new Date(item.created_at))
+          );
+        } else {
+          console.error(
+            "Updated dates are not in expected format:",
+            updatedDates
+          );
+          setHighlightedDates([]);
+        }
       }
     } catch (error) {
       console.error("Error deleting content:", error);

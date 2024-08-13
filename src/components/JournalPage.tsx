@@ -1,9 +1,10 @@
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import { Button } from "../@/components/ui/button";
 import { Input } from "../@/components/ui/input";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { addJournalRecords } from "../utils/supabaseFunction";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../Context/UserContext";
 
 interface IFormInput {
   entries: string[];
@@ -14,6 +15,7 @@ function JournalPage() {
   const [journal, setJournal] = useState<string>("");
   const [entries, setEntries] = useState<string[]>([]);
   const navigate = useNavigate();
+  const { user } = useUser();
 
   const onChangeJournal = (event: ChangeEvent<HTMLInputElement>) =>
     setJournal(event.target.value);
@@ -25,13 +27,19 @@ function JournalPage() {
     }
   };
 
+  useEffect(() => {
+    console.log("Current user in JournalPage:", user);
+  }, [user]);
+
   const onSubmitJournal: SubmitHandler<IFormInput> = async () => {
     try {
-      const user_id = "bc45252b-6f56-497d-9b5c-e13db27db01b"; // 仮の値
-      await addJournalRecords(user_id, entries);
-
-      reset();
-      navigate(`/response`);
+      if (user && user.id) {
+        await addJournalRecords(user.id, entries);
+        reset();
+        navigate(`/response`);
+      } else {
+        console.log("有効なユーザーIDが見つかりません", user);
+      }
     } catch (error) {
       console.log("コンテンツの登録中にエラーが発生しました", error);
     }
