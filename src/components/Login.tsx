@@ -32,10 +32,14 @@ function LoginPage() {
   const onLogin = async (data: FormData) => {
     try {
       const user = await loginUser(data.email, data.password);
-      setUser(user);
-      console.log("ログインが成功しました:");
-      reset();
-      navigate("/journal");
+      if (user) {
+        setUser(user);
+        console.log("ログインが成功しました:", user);
+        reset();
+        setTimeout(() => navigate("/journal"), 0);
+      } else {
+        console.error("ログインに失敗しました: ユーザーが見つかりません");
+      }
     } catch (error) {
       console.error("ログインエラー:", error);
     }

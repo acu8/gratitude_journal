@@ -25,9 +25,11 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     if (user) {
       sessionStorage.setItem("user", JSON.stringify(user));
       sessionStorage.setItem("isAuthenticated", "true");
+      setIsAuthenticated(true);
     } else {
       sessionStorage.removeItem("user");
       sessionStorage.setItem("isAuthenticated", "false");
+      setIsAuthenticated(false);
     }
   }, [user, isAuthenticated]);
 
