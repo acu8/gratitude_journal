@@ -2,41 +2,64 @@ import { useState, ChangeEvent, useEffect } from "react";
 import { Button } from "../@/components/ui/button";
 import { Input } from "../@/components/ui/input";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { addJournalRecords } from "../utils/supabaseFunction";
+import {
+  addJournalRecords,
+  checkLastSubmission,
+} from "../utils/supabaseFunction";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../Context/UserContext";
+import { Link } from "react-router-dom";
 
 interface IFormInput {
   entries: string[];
 }
 
-function JournalPage() {
+export function JournalPage() {
   const { handleSubmit, reset } = useForm<IFormInput>();
   const [journal, setJournal] = useState<string>("");
   const [entries, setEntries] = useState<string[]>([]);
+  const [canSubmit, setCanSubmit] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
   const navigate = useNavigate();
   const { user } = useUser();
 
-  const onChangeJournal = (event: ChangeEvent<HTMLInputElement>) =>
+  const onChangeJournal = (event: ChangeEvent<HTMLInputElement>) => {
     setJournal(event.target.value);
+  };
 
   const addEntry = () => {
     if (journal.trim() !== "") {
       setEntries([...entries, journal]);
       setJournal("");
+      setError("");
     }
   };
 
   useEffect(() => {
     console.log("Current user in JournalPage:", user);
+    checkSubmissionEligibility();
   }, [user]);
+
+  const checkSubmissionEligibility = async () => {
+    if (user && user.id) {
+      const canSubmitToday = await checkLastSubmission(user.id);
+      setCanSubmit(canSubmitToday);
+      if (!canSubmitToday) {
+        setError("今日のジャーナルを投稿済みです。明日に戻ってきてください!");
+      } else {
+        setError("");
+      }
+    }
+  };
 
   const onSubmitJournal: SubmitHandler<IFormInput> = async () => {
     try {
-      if (user && user.id) {
+      if (user && user.id && canSubmit) {
         await addJournalRecords(user.id, entries);
         reset();
         navigate(`/response`);
+      } else if (!canSubmit) {
+        setError("今日はすでにジャーナルを送信しています。");
       } else {
         console.log("有効なユーザーIDが見つかりません", user);
       }
@@ -45,9 +68,16 @@ function JournalPage() {
     }
   };
 
+  // デバッグ用のuseEffect
+  useEffect(() => {
+    console.log("Current state - canSubmit:", canSubmit, "error:", error);
+  }, [canSubmit, error]);
+
   return (
     <div className="p-4 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Gratitude Journal</h1>
+      <h1 className="text-2xl font-bold mb-4" data-testid="title">
+        Gratitude Journal
+      </h1>
       <p className="mb-4">What are you grateful for today?</p>
       <form onSubmit={handleSubmit(onSubmitJournal)}>
         <div>
@@ -55,7 +85,7 @@ function JournalPage() {
             htmlFor="journal"
             className="block text-sm font-medium text-gray-700 mb-2"
           >
-            Text five things you are grateful for today
+            Text three things you are grateful for today
           </label>
 
           <div className="flex items-center space-x-2">
@@ -66,12 +96,15 @@ function JournalPage() {
               value={journal}
               onChange={onChangeJournal}
               placeholder="Enter your gratitude..."
-              className="flex-grow"
+              className=""
+              data-testid="input"
+              // disabled={!canSubmit}
             />
             <Button
               type="button"
               size="icon"
               onClick={addEntry}
+              data-testid="add-button"
               className="w-10 h-9 rounded-full text-white hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
             >
               <svg
@@ -91,6 +124,11 @@ function JournalPage() {
             </Button>
           </div>
         </div>
+        {error && (
+          <p className="text-red-500 mt-2" role="alert">
+            {error}
+          </p>
+        )}
         <div className="mt-6">
           <h2 className="text-md font-semibold mb-2">Your Gratitude List:</h2>
           <ul className="list-disc pl-5 space-y-2">
@@ -100,15 +138,28 @@ function JournalPage() {
           </ul>
           <div className="flex justify-end mt-4">
             {entries.length == 3 ? (
-              <Button type="submit">Submit</Button>
+              <Button type="submit" data-testid="submit">
+                Submit
+              </Button>
             ) : (
               <Button className="hidden">Submit</Button>
             )}
           </div>
         </div>
       </form>
+      <div className="flex justify-end mt-4">
+        <Link
+          to="/calendar"
+          className="mt-4"
+          style={{ textDecoration: "none" }}
+        >
+          <button  data-testid="calendar" className="btn btn-outline btn-success mt-4 cursor: cursor-pointer">
+            Journal Calendar
+          </button>
+        </Link>
+      </div>
     </div>
   );
 }
 
-export default JournalPage;
+// export default JournalPage;

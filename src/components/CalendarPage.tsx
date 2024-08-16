@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-
+import { Link } from "react-router-dom";
 import { Calendar } from "../@/components/ui/calendar";
 import {
   fetchHighlightedDates,
@@ -34,6 +34,10 @@ function CalendarPage() {
     null
   );
   const { user } = useUser();
+
+  useEffect(() => {
+    console.log("Current user in CalendarPage:", user);
+  }, [user]);
 
   useEffect(() => {
     const fetchDates = async () => {
@@ -92,15 +96,25 @@ function CalendarPage() {
     setDate(selectedDate);
     if (selectedDate) {
       try {
-        const content = await handleDateSelect(selectedDate);
-        setSelectedContent((content as ContentItem)?.content || null);
-        setSelectedJournalId((content as ContentItem)?.id || null);
-        const aiResponseResult: AiResponse = await getAiResponse(selectedDate);
-        if (aiResponseResult && aiResponseResult.length > 0) {
-          setSelectedResponse(aiResponseResult[0].response);
-        } else {
-          console.log("No valid AI response available for the selected date");
-          setSelectedResponse(null);
+        if (user && user.id) {
+          const content = await handleDateSelect(selectedDate, user.id);
+          setSelectedContent((content as ContentItem)?.content || null);
+          setSelectedJournalId((content as ContentItem)?.id || null);
+
+          const aiResponseResult: AiResponse = await getAiResponse(
+            selectedDate,
+            user.id
+          );
+          if (
+            aiResponseResult &&
+            aiResponseResult.length > 0 &&
+            aiResponseResult[0].response
+          ) {
+            setSelectedResponse(aiResponseResult[0].response);
+          } else {
+            console.log("No valid AI response available for the selected date");
+            setSelectedResponse(null);
+          }
         }
       } catch (error) {
         console.error(
@@ -115,7 +129,15 @@ function CalendarPage() {
 
   return (
     <div>
+      <div className="flex justify-end mb-2">
+        <Link to="/journal" className="" style={{ textDecoration: "none" }}>
+          <button className="btn btn-outline m-2 btn-success cursor: cursor-pointer">
+            新規投稿をする
+          </button>
+        </Link>
+      </div>
       <Calendar
+        data-testid="calendar"
         mode="single"
         selected={date}
         onSelect={(newDate: Date | undefined) => onDateSelect(newDate)}
@@ -123,12 +145,19 @@ function CalendarPage() {
         modifiers={{
           highlighted: highlightedDates,
         }}
+        modifiersClassNames={{
+          highlighted: "highlighted-date",
+        }}
         modifiersStyles={{
           highlighted: { backgroundColor: "#90cdf4" },
         }}
       />
+
       {selectedContent && (
-        <div className="mt-4 p-4 bg-gray-100 rounded-md">
+        <div
+          className="mt-4 p-4 bg-gray-100 rounded-md"
+          data-testid="journal-container"
+        >
           <h3 className="font-bold">選択された日付のコンテンツ:</h3>
           <ul className="list-disc pl-5">
             {selectedContent.map((item, index) => (

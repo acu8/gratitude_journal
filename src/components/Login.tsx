@@ -36,7 +36,7 @@ function LoginPage() {
         setUser(user);
         console.log("ログインが成功しました:", user);
         reset();
-        setTimeout(() => navigate("/journal"), 0);
+        setTimeout(() => navigate("/calendar"), 0);
       } else {
         console.error("ログインに失敗しました: ユーザーが見つかりません");
       }

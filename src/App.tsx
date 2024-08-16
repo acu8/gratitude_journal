@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./Route/ProtectedRoute";
 import Login from "./components/Login";
-import JournalPage from "./components/JournalPage";
+import { JournalPage } from "./components/JournalPage";
 import ResponsePage from "./components/ResponsePage";
 import CalendarPage from "./components/CalendarPage";
 import Home from "./components/Home";

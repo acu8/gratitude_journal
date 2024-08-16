@@ -7,13 +7,6 @@ function Home() {
         Login Page
       </Link>
       <br />
-      <Link to="/journal" className="link link-hover">
-        Journal Page
-      </Link>
-      <br />
-      <Link to="/calendar" className="link link-hover">
-        Calendar Page
-      </Link>
     </div>
   );
 }

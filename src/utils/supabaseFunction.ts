@@ -101,7 +101,7 @@ export const fetchHighlightedDates = async (user_id: string) => {
   return data;
 };
 
-export const handleDateSelect = async (selectedDate: Date | undefined) => {
+export const handleDateSelect = async (selectedDate: Date | undefined, user_id: string) => {
   if (!selectedDate) {
     console.error('Selected date is undefined');
     return null;
@@ -121,6 +121,7 @@ export const handleDateSelect = async (selectedDate: Date | undefined) => {
     const { data, error } = await supabase
       .from('journal')
       .select()
+      .eq("user_id", user_id)
       .gte('created_at', startDateString)
       .lte('created_at', endDateString);
 
@@ -142,7 +143,7 @@ export const handleDateSelect = async (selectedDate: Date | undefined) => {
 };
 
 
-export const getAiResponse = async (selectedDate: Date | undefined) => {
+export const getAiResponse = async (selectedDate: Date | undefined, user_id: string) => {
   if (!selectedDate) {
     console.error('Selected date is undefined');
     return null;
@@ -156,9 +157,12 @@ export const getAiResponse = async (selectedDate: Date | undefined) => {
   try {
     const { data, error } = await supabase
       .from('journal')
-      .select('id')
+      .select('id, created_at')
+      .eq("user_id", user_id)
       .gte('created_at', startDateString)
-      .lte('created_at', endDateString);
+      .lte('created_at', endDateString)
+      .order('created_at', { ascending: true }) 
+      .limit(1); 
 
       if (error) throw error;
 
@@ -166,16 +170,23 @@ export const getAiResponse = async (selectedDate: Date | undefined) => {
         console.log('Journalテーブルから内容の取得中にエラーが発生しました:', error);
 
       } 
+      console.log('取得したジャーナルデータ:', data);
 
-      const aiResponse = await supabase 
+      const { data: aiResponseData, error: aiResponseError } = await supabase 
       .from("llm_response")
       .select()
-      .eq("journal_id", data.map(item => item.id))
-      .select()
+      .eq("journal_id", data[0].id)
+      .order('created_at', { ascending: false }) 
+      .limit(1);
 
-      console.log("AIレスポンス", JSON.stringify(aiResponse, null, 2));
-      if (aiResponse.data && aiResponse.data.length > 0) {
-        return aiResponse.data;
+      if (aiResponseError) {
+        console.error('llm_responseテーブルからデータ取得中にエラーが発生しました:', aiResponseError);
+        return null;
+      }
+
+      console.log("AIレスポンス", JSON.stringify(aiResponseData, null, 2));
+      if (aiResponseData && aiResponseData.length > 0) {
+        return aiResponseData;
       } else {
         console.log("選択された日付のAIレスポンスが見つかりません");
         return null;
@@ -247,4 +258,34 @@ export const loginUser = async (email: string, password: string): Promise<User> 
   }
 
   return data;
+};
+
+
+
+export const getExistedAiResponse = async (journalId: number) => {
+  const { data, error } = await supabase.from("llm_response").select("response").eq("journal_id", journalId).select();
+  if (error) {
+    console.error("Error deleting content:", error);
+  }
+  return data;
+};
+
+export const checkLastSubmission = async (userId: string) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const { data, error } = await supabase
+    .from('journal')
+    .select('created_at')
+    .eq('user_id', userId)
+    .gte('created_at', today.toISOString())
+    .order('created_at', { ascending: false })
+    .limit(1);
+
+  if (error) {
+    console.error('Error checking last submission:', error);
+    return false;
+  }
+
+  return data.length === 0; // データがない場合、今日はまだ送信していない
 };
