@@ -125,66 +125,77 @@ function CalendarPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-md mx-auto">
-        <div className="flex justify-end mb-2">
-          <Link to="/journal" className="" style={{ textDecoration: "none" }}>
-            <button
-              data-testid="new-journal"
-              className="btn btn-outline m-2 btn-success cursor: cursor-pointer"
-            >
-              新規投稿をする
-            </button>
-          </Link>
+    <div
+      className="flex items-center justify-center min-h-screen p-4 bg-cover bg-center bg-no-repeat bg-fixed"
+      style={{
+        backgroundImage: "url('/nightai.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
+      }}
+    >
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-md mx-auto">
+          <div className="flex justify-end mb-6">
+            <Link to="/journal" className="" style={{ textDecoration: "none" }}>
+              <button
+                data-testid="new-journal"
+                className="bg-gradient-to-b from-fuchsia-300 to-indigo-600 hover:bg-fuchsia-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105"
+              >
+                新規投稿をする
+              </button>
+            </Link>
+          </div>
+          <div className="flex justify-center items-center">
+            <Calendar
+              data-testid="calendar"
+              mode="single"
+              selected={date}
+              onSelect={(newDate: Date | undefined) => onDateSelect(newDate)}
+              className="rounded-md border bg-white"
+              modifiers={{
+                highlighted: highlightedDates,
+              }}
+              modifiersClassNames={{
+                highlighted: "highlighted-date",
+              }}
+              modifiersStyles={{
+                highlighted: { backgroundColor: "#90cdf4" },
+              }}
+            />
+          </div>
         </div>
-        <div className="flex justify-center items-center">
-          <Calendar
-            data-testid="calendar"
-            mode="single"
-            selected={date}
-            onSelect={(newDate: Date | undefined) => onDateSelect(newDate)}
-            className="rounded-md border"
-            modifiers={{
-              highlighted: highlightedDates,
-            }}
-            modifiersClassNames={{
-              highlighted: "highlighted-date",
-            }}
-            modifiersStyles={{
-              highlighted: { backgroundColor: "#90cdf4" },
-            }}
-          />
-        </div>
-      </div>
-      {selectedContent && (
-        <div
-          className="mt-4 p-4 bg-gray-100 rounded-md"
-          data-testid="journal-container"
-        >
-          <h3 className="font-bold">選択された日付のコンテンツ:</h3>
-          <ul className="list-disc pl-5">
-            {selectedContent.map((item, index) => (
-              <li key={index}>{item}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-      <div>
-        {selectedResponse ? (
-          <div>
-            <p>{selectedResponse}</p>
-            <button
-              onClick={() => handleDelete(selectedJournalId)}
-              className="btn btn-outline btn-success mt-4 cursor: cursor-pointer"
-            >
+        {selectedContent && (
+          <div
+            className="mt-4 p-4 bg-gray-100 rounded-md"
+            data-testid="journal-container"
+          >
+            <h3 className="font-bold">選択された日付のコンテンツ:</h3>
+            <ul className="list-disc pl-5">
+              {selectedContent.map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+        <div>
+          {selectedResponse ? (
+            <div>
+              <p>{selectedResponse}</p>
+              <button
+                onClick={() => handleDelete(selectedJournalId)}
+                className="btn btn-outline btn-success mt-4 cursor: cursor-pointer"
+              >
+                投稿を削除する
+              </button>
+            </div>
+          ) : (
+            <button className="btn btn-outline btn-success mt-4 cursor: cursor-pointer hidden">
               投稿を削除する
             </button>
-          </div>
-        ) : (
-          <button className="btn btn-outline btn-success mt-4 cursor: cursor-pointer hidden">
-            投稿を削除する
-          </button>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

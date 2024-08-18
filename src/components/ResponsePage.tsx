@@ -71,11 +71,12 @@ function ResponsePage() {
           const combinedPrompt = `
                 システムインストラクション: あなたはユーザーの日記を読み、共感的で洞察力のあるフィードバックを提供する心理カウンセラーです。
                 ユーザーの感情を理解し、前向きなコメントを提供してください。明日1日を前向きで始められるように文章を終わらしてください。
-                
+                また、返答には読みやすいように改行を適度に入れてください。
+
                 ユーザーの日記:
                 ${content}
 
-                回答は簡潔にまとめ、全体で200字程度に収めてください。`;
+                回答は簡潔にまとめ、全体で150字程度に収めてください。`;
 
           const result = await axios.post(
             "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
@@ -170,39 +171,60 @@ function ResponsePage() {
     return <div>今日のジャーナルエントリーが見つかりません</div>;
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-xl font-bold mb-4" data-testid="title">
-        ResponsePage
-      </h1>
-      <div className="journal-content">
-        <h2 className="text-lg mb-2">今日のジャーナル内容：</h2>
-        <ul className="list-disc pl-5">
-          {todayJournal.content.map((item, itemIndex) => (
-            <li key={itemIndex} className="text-gray-700">
-              {item}
-            </li>
-          ))}
-        </ul>
-      </div>
-      {response && (
-        <div className="ai-response mt-4">
-          <h2 className="text-lg mb-2">AI応答：</h2>
-          <p>{response}</p>
-        </div>
-      )}
-      <div className="flex justify-end mt-4">
-        <Link
-          to="/calendar"
-          className="mt-4"
-          style={{ textDecoration: "none" }}
+    <div
+      className="flex items-center justify-center min-h-screen p-4 bg-cover bg-center bg-no-repeat bg-fixed"
+      style={{
+        backgroundImage: "url('/nightai.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
+      }}
+    >
+      <div className="w-full max-w-md md:max-w-lg lg:max-w-xl bg-white/50 backdrop-blur-sm rounded-lg shadow-md p-4 md:p-6">
+        <h1
+          className="text-xl font-bold mb-4 text-gray-600"
+          data-testid="title"
         >
-          <button
-            data-testid="calendar"
-            className="btn btn-outline btn-success mt-4 cursor: cursor-pointer"
+          ここではあなたの感謝に対してAIが返答をします。
+        </h1>
+        <div className="journal-content bg-white shadow-lg rounded-lg p-6 mb-6 hover:shadow-xl transition-shadow duration-300">
+          <h2 className="text-l font-semibold mb-4 text-gray-500">
+            あなたが書いた今日の感謝：
+          </h2>
+          <ul className="space-y-2">
+            {todayJournal.content.map((item, itemIndex) => (
+              <li key={itemIndex} className="flex items-start">
+                <span className="inline-block w-2 h-2 rounded-full bg-cyan-200 mt-2 mr-2"></span>
+                <span className="text-gray-700">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        {response && (
+          <div className="ai-response mt-4 chat chat-end">
+            <div className="chat-image avatar">
+              <div className="w-10 rounded-full">
+                <img alt="AI woman" src="/woman2.jpg" />
+              </div>
+            </div>
+            <p className="chat-bubble chat-bubble-primary">{response}</p>
+          </div>
+        )}
+        <div className="flex justify-end mt-10">
+          <Link
+            to="/calendar"
+            className="mt-4"
+            style={{ textDecoration: "none" }}
           >
-            Journal Calendar
-          </button>
-        </Link>
+            <button
+              data-testid="calendar"
+              className="bg-gradient-to-b from-yellow-200 to-yellow-400 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-full w-full transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-10"
+            >
+              過去のジャーナルを見る
+            </button>
+          </Link>
+        </div>
       </div>
     </div>
   );
