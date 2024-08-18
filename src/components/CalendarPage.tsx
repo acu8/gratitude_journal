@@ -198,7 +198,7 @@ function CalendarPage() {
             </div>
           ) : (
             <div className="mt-4 flex justify-center w-full">
-              <button className="bg-gradient-to-b from-yellow-200 to-yellow-400 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-full w-full transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-10">
+              <button className="bg-gradient-to-b from-yellow-200 to-yellow-400 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-full w-full transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-10 hidden">
                 投稿を削除する
               </button>
             </div>

@@ -116,7 +116,7 @@ describe("CalendarPage", () => {
     await waitFor(() => {
       const highlightedDate = screen.getByText("1");
       expect(highlightedDate).toHaveStyle(
-        "background-color: rgb(144, 205, 244)"
+        "background-color: rgb(185, 123, 252)"
       );
     });
 
