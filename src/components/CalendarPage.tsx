@@ -36,10 +36,6 @@ function CalendarPage() {
   const { user } = useUser();
 
   useEffect(() => {
-    console.log("Current user in CalendarPage:", user);
-  }, [user]);
-
-  useEffect(() => {
     const fetchDates = async () => {
       try {
         if (user && user.id) {
@@ -123,6 +119,7 @@ function CalendarPage() {
         );
         setSelectedContent(null);
         setSelectedResponse(null);
+        setSelectedJournalId(null);
       }
     }
   };
@@ -131,7 +128,10 @@ function CalendarPage() {
     <div>
       <div className="flex justify-end mb-2">
         <Link to="/journal" className="" style={{ textDecoration: "none" }}>
-          <button className="btn btn-outline m-2 btn-success cursor: cursor-pointer">
+          <button
+            data-testid="new-journal"
+            className="btn btn-outline m-2 btn-success cursor: cursor-pointer"
+          >
             新規投稿をする
           </button>
         </Link>

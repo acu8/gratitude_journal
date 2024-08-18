@@ -41,7 +41,7 @@ function NewUserPage() {
   return (
     <Card className="w-[350px]">
       <CardHeader>
-        <CardTitle>新規ユーザー登録</CardTitle>
+        <CardTitle data-testid="title">新規ユーザー登録</CardTitle>
         <CardDescription></CardDescription>
       </CardHeader>
       <CardContent>
@@ -51,6 +51,7 @@ function NewUserPage() {
               <Label htmlFor="framework">Name</Label>
               <Input
                 id="name"
+                data-testid="name"
                 placeholder="フルネームを入力"
                 {...register("name", { required: "名前の入力は必須です" })}
               />
@@ -62,6 +63,7 @@ function NewUserPage() {
               <Label htmlFor="name">Email</Label>
               <Input
                 id="email"
+                data-testid="email"
                 placeholder="Emailアドレスを入力"
                 {...register("email", {
                   required: "メールアドレスは必須です",
@@ -79,6 +81,7 @@ function NewUserPage() {
               <Label htmlFor="framework">Password</Label>
               <Input
                 id="password"
+                data-testid="password"
                 placeholder="Passwordを入力"
                 type="password"
                 {...register("password", {
@@ -96,7 +99,11 @@ function NewUserPage() {
           </div>
 
           <CardFooter className="flex justify-end mt-4">
-            <button type="submit" className="btn btn-success">
+            <button
+              data-testid="submit"
+              type="submit"
+              className="btn btn-success"
+            >
               新規ユーザー登録
             </button>
           </CardFooter>

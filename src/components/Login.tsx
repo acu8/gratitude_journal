@@ -36,7 +36,7 @@ function LoginPage() {
         setUser(user);
         console.log("ログインが成功しました:", user);
         reset();
-        setTimeout(() => navigate("/calendar"), 0);
+        navigate("/calendar");
       } else {
         console.error("ログインに失敗しました: ユーザーが見つかりません");
       }
@@ -48,7 +48,7 @@ function LoginPage() {
   return (
     <Card className="w-[350px]">
       <CardHeader>
-        <CardTitle>Login Page</CardTitle>
+        <CardTitle data-testid="title">Login Page</CardTitle>
         <CardDescription></CardDescription>
       </CardHeader>
       <CardContent>
@@ -59,6 +59,7 @@ function LoginPage() {
               <Input
                 id="email"
                 placeholder="Emailアドレスを入力"
+                data-testid="email"
                 {...register("email", {
                   required: "メールアドレスは必須です",
                   pattern: {
@@ -75,6 +76,7 @@ function LoginPage() {
               <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
+                data-testid="password"
                 placeholder="Passwordを入力"
                 type="password"
                 {...register("password", {
@@ -91,7 +93,10 @@ function LoginPage() {
             </div>
           </div>
           <div className="flex justify-end">
-            <button className="btn btn-outline btn-success cursor: cursor-pointer">
+            <button
+              data-testid="login-button"
+              className="btn btn-outline btn-success cursor: cursor-pointer"
+            >
               Login
             </button>
           </div>
@@ -99,7 +104,9 @@ function LoginPage() {
       </CardContent>
       <CardFooter className="flex justify-between mt-4">
         <Link to="/newuser" className="" style={{ textDecoration: "none" }}>
-          <button className="btn btn-warning">新規ユーザー登録はこちら</button>
+          <button data-testid="new-user" className="btn btn-warning">
+            新規ユーザー登録はこちら
+          </button>
         </Link>
       </CardFooter>
     </Card>
