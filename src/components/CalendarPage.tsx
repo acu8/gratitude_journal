@@ -161,18 +161,18 @@ function CalendarPage() {
                 highlighted: "highlighted-date",
               }}
               modifiersStyles={{
-                highlighted: { backgroundColor: "#90cdf4" },
+                highlighted: { backgroundColor: "#B97BFC" },
               }}
             />
           </div>
         </div>
         {selectedContent && (
           <div
-            className="mt-4 p-4 bg-gray-100 rounded-md"
+            className="mt-4 p-4 bg-gray-100/60 rounded-md"
             data-testid="journal-container"
           >
-            <h3 className="font-bold">選択された日付のコンテンツ:</h3>
-            <ul className="list-disc pl-5">
+            <h3 className="font-bold">選択された日付のジャーナル:</h3>
+            <ul className="list-disc pl-3 space-y-1">
               {selectedContent.map((item, index) => (
                 <li key={index}>{item}</li>
               ))}
@@ -181,19 +181,27 @@ function CalendarPage() {
         )}
         <div>
           {selectedResponse ? (
-            <div>
-              <p>{selectedResponse}</p>
-              <button
-                onClick={() => handleDelete(selectedJournalId)}
-                className="btn btn-outline btn-success mt-4 cursor: cursor-pointer"
-              >
+            <div className="flex flex-col items-center">
+              <div className="mt-4 p-4 bg-gray-100/60 rounded-md">
+                <h3 className="font-bold">AIからの返信:</h3>
+
+                <p>{selectedResponse}</p>
+              </div>
+              <div className="mt-4 flex justify-center w-full">
+                <button
+                  onClick={() => handleDelete(selectedJournalId)}
+                  className="bg-gradient-to-b from-lime-300 to-lime-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-full w-full transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-10"
+                >
+                  投稿を削除する
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="mt-4 flex justify-center w-full">
+              <button className="bg-gradient-to-b from-yellow-200 to-yellow-400 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-full w-full transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-10">
                 投稿を削除する
               </button>
             </div>
-          ) : (
-            <button className="btn btn-outline btn-success mt-4 cursor: cursor-pointer hidden">
-              投稿を削除する
-            </button>
           )}
         </div>
       </div>
