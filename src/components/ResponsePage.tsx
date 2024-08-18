@@ -13,10 +13,7 @@ type JournalEntry = {
   content: string[];
 };
 
-type JournalData = JournalEntry[] | null;
-
 function ResponsePage() {
-  const [journalData, setJournalData] = useState<JournalData>(null);
   const [todayJournal, setTodayJournal] = useState<JournalEntry | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,7 +25,6 @@ function ResponsePage() {
       try {
         if (user && user.id) {
           const data = await getJournal(user.id);
-          setJournalData(data as JournalData);
 
           const today = new Date();
           today.setHours(0, 0, 0, 0);
