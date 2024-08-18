@@ -125,34 +125,37 @@ function CalendarPage() {
   };
 
   return (
-    <div>
-      <div className="flex justify-end mb-2">
-        <Link to="/journal" className="" style={{ textDecoration: "none" }}>
-          <button
-            data-testid="new-journal"
-            className="btn btn-outline m-2 btn-success cursor: cursor-pointer"
-          >
-            新規投稿をする
-          </button>
-        </Link>
+    <div className="container mx-auto px-4 py-8">
+      <div className="max-w-md mx-auto">
+        <div className="flex justify-end mb-2">
+          <Link to="/journal" className="" style={{ textDecoration: "none" }}>
+            <button
+              data-testid="new-journal"
+              className="btn btn-outline m-2 btn-success cursor: cursor-pointer"
+            >
+              新規投稿をする
+            </button>
+          </Link>
+        </div>
+        <div className="flex justify-center items-center">
+          <Calendar
+            data-testid="calendar"
+            mode="single"
+            selected={date}
+            onSelect={(newDate: Date | undefined) => onDateSelect(newDate)}
+            className="rounded-md border"
+            modifiers={{
+              highlighted: highlightedDates,
+            }}
+            modifiersClassNames={{
+              highlighted: "highlighted-date",
+            }}
+            modifiersStyles={{
+              highlighted: { backgroundColor: "#90cdf4" },
+            }}
+          />
+        </div>
       </div>
-      <Calendar
-        data-testid="calendar"
-        mode="single"
-        selected={date}
-        onSelect={(newDate: Date | undefined) => onDateSelect(newDate)}
-        className="rounded-md border"
-        modifiers={{
-          highlighted: highlightedDates,
-        }}
-        modifiersClassNames={{
-          highlighted: "highlighted-date",
-        }}
-        modifiersStyles={{
-          highlighted: { backgroundColor: "#90cdf4" },
-        }}
-      />
-
       {selectedContent && (
         <div
           className="mt-4 p-4 bg-gray-100 rounded-md"

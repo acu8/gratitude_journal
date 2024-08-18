@@ -57,19 +57,19 @@ function ResponsePage() {
 
   useEffect(() => {
     const aiResponse = async () => {
-      if (!journalData) return;
+      if (!todayJournal) return;
       try {
-        const journalId = journalData[0].id;
+        const journalId = todayJournal.id;
         if (journalId === undefined) {
           throw new Error("Journal IDが見つかりません");
         }
 
-        const existingResponse = await getExistedAiResponse(journalData[0].id);
+        const existingResponse = await getExistedAiResponse(todayJournal.id);
 
         if (existingResponse && existingResponse.length > 0) {
           setResponse(existingResponse[0].response);
         } else {
-          const content = journalData[0].content.join(" ");
+          const content = todayJournal.content.join(" ");
           console.log("Request Content:", content);
 
           const combinedPrompt = `
@@ -113,7 +113,7 @@ function ResponsePage() {
             ) {
               const aiResponseText = candidateContent.parts[0].text;
               try {
-                const journalId = journalData[0].id;
+                const journalId = todayJournal.id;
                 if (journalId === undefined) {
                   throw new Error("Journal IDが見つかりません");
                 }
@@ -166,7 +166,7 @@ function ResponsePage() {
       }
     };
     aiResponse();
-  }, [todayJournal]);
+  }, [todayJournal?.id]);
 
   if (loading) return <div>読み込み中...</div>;
   if (error) return <div>エラー: {error}</div>;

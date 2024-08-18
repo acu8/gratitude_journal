@@ -74,89 +74,110 @@ export function JournalPage() {
   }, [canSubmit, error]);
 
   return (
-    <div className="p-4 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold mb-4" data-testid="title">
-        Gratitude Journal
-      </h1>
-      <p className="mb-4">What are you grateful for today?</p>
-      <form onSubmit={handleSubmit(onSubmitJournal)}>
-        <div>
-          <label
-            htmlFor="journal"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Text three things you are grateful for today
-          </label>
-
-          <div className="flex items-center space-x-2">
-            <Input
-              id="journal"
-              name="journal"
-              type="text"
-              value={journal}
-              onChange={onChangeJournal}
-              placeholder="Enter your gratitude..."
-              className=""
-              data-testid="input"
-              // disabled={!canSubmit}
-            />
-            <Button
-              type="button"
-              size="icon"
-              onClick={addEntry}
-              data-testid="add-button"
-              className="w-10 h-9 rounded-full text-white hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                />
-              </svg>
-            </Button>
-          </div>
-        </div>
-        {error && (
-          <p className="text-red-500 mt-2" role="alert">
-            {error}
-          </p>
-        )}
-        <div className="mt-6">
-          <h2 className="text-md font-semibold mb-2">Your Gratitude List:</h2>
-          <ul className="list-disc pl-5 space-y-2">
-            {entries.map((entry, index) => (
-              <li key={index}>{entry}</li>
-            ))}
-          </ul>
-          <div className="flex justify-end mt-4">
-            {entries.length == 3 ? (
-              <Button type="submit" data-testid="submit">
-                Submit
-              </Button>
-            ) : (
-              <Button className="hidden">Submit</Button>
-            )}
-          </div>
-        </div>
-      </form>
-      <div className="flex justify-end mt-4">
-        <Link
-          to="/calendar"
-          className="mt-4"
-          style={{ textDecoration: "none" }}
+    <div
+      className="flex items-center justify-center min-h-screen p-4 bg-cover bg-center bg-no-repeat bg-fixed"
+      style={{
+        backgroundImage: "url('/nightai.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
+      }}
+    >
+      <div className="md bg-white/50 backdrop-blur-sm rounded-lg shadow-md p-6">
+        <h1
+          className="text-2xl font-bold mb-4 text-gray-600"
+          data-testid="title"
         >
-          <button  data-testid="calendar" className="btn btn-outline btn-success mt-4 cursor: cursor-pointer">
-            Journal Calendar
-          </button>
-        </Link>
+          Arigatou Journal
+        </h1>
+        <p className="mb-6 text-gray-600">
+          今日はどんなことに「ありがとう」と言いたいですか？
+        </p>
+        <form onSubmit={handleSubmit(onSubmitJournal)}>
+          <div>
+            <label
+              htmlFor="journal"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              感謝できることを３つ書いてみてください。
+            </label>
+
+            <div className="flex items-center space-x-2 w-full">
+              <Input
+                id="journal"
+                name="journal"
+                type="text"
+                value={journal}
+                onChange={onChangeJournal}
+                placeholder="Enter your gratitude..."
+                className="flex-grow"
+                data-testid="input"
+                // disabled={!canSubmit}
+              />
+              <Button
+                type="button"
+                size="icon"
+                onClick={addEntry}
+                data-testid="add-button"
+                className="w-10 h-9 rounded-full text-white hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                  />
+                </svg>
+              </Button>
+            </div>
+          </div>
+          {error && (
+            <p className="text-red-500 mt-2" role="alert">
+              {error}
+            </p>
+          )}
+          <div className="mt-6">
+            <h2 className="text-md font-semibold mb-2 text-gray-600">
+              あなたの今日の感謝リスト:
+            </h2>
+            <ul className="list-disc pl-5 space-y-2">
+              {entries.map((entry, index) => (
+                <li key={index}>{entry}</li>
+              ))}
+            </ul>
+            <div className="flex justify-end mt-10">
+              {entries.length == 3 ? (
+                <Button type="submit" data-testid="submit">
+                  Submit
+                </Button>
+              ) : (
+                <Button className="hidden">Submit</Button>
+              )}
+            </div>
+          </div>
+        </form>
+        <div className="flex justify-end mt-4">
+          <Link
+            to="/calendar"
+            className="mt-4"
+            style={{ textDecoration: "none" }}
+          >
+            <button
+              data-testid="calendar"
+              className="bg-gradient-to-b from-yellow-200 to-yellow-400 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-full w-full transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-10"
+            >
+              過去のジャーナルを見る
+            </button>
+          </Link>
+        </div>
       </div>
     </div>
   );
