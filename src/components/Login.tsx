@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -21,13 +22,19 @@ type FormData = {
 
 function LoginPage() {
   const navigate = useNavigate();
-  const { setUser } = useUser();
+  const { user, setUser } = useUser();
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
   } = useForm<FormData>();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/calendar");
+    }
+  }, [user, navigate]);
 
   const onLogin = async (data: FormData) => {
     try {
