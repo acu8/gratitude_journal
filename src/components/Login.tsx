@@ -43,7 +43,6 @@ function LoginPage() {
         setUser(user);
         console.log("ログインが成功しました:", user);
         reset();
-        navigate("/calendar");
       } else {
         console.error("ログインに失敗しました: ユーザーが見つかりません");
       }
