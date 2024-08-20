@@ -4,7 +4,6 @@ import Login from "./components/Login";
 import { JournalPage } from "./components/JournalPage";
 import ResponsePage from "./components/ResponsePage";
 import CalendarPage from "./components/CalendarPage";
-import Home from "./components/Home";
 import "./App.css";
 import NewUserPage from "./components/NewUserPage";
 import { UserProvider } from "./Context/UserContext";
