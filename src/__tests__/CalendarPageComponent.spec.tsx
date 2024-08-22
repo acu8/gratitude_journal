@@ -93,7 +93,7 @@ describe("CalendarPage", () => {
   //   });
   // });
 
-  test("カレンダーが表示され、日付選択に応答する", async () => {
+  test("カレンダーが表示され、日付選択をするとジャーナル内容と削除ボタンが表示される", async () => {
     const mockHighlightedDates = [new Date("2024-08-01")];
     const mockJournalContent = ["Journal Entry 1"];
     const mockAiResponse = "AI Response";
