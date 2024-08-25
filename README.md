@@ -5,6 +5,9 @@
 Gratitude App は、毎日の感謝の気持ちを記録し、AI からの励ましを受け取ることができるアプリケーションです。ユーザーは寝る前にその日感謝できることを 3 つ入力し、AI からの返信を受け取ることができます。
 
 詳しくはこちら：
+https://qiita.com/acu8/items/ac2c9ea02985e3442cf6
+
+https://qiita.com/acu8/items/f13ff54bf9f0263a877d
 
 ## 機能
 
